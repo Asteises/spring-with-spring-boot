@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class ItemMapper {
+public final class ItemMapper {
     public static Item mapToItem(ItemDto itemDto, long userId) {
         Item item = new Item();
         item.setUserId(userId);
