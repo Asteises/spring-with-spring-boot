@@ -1,10 +1,12 @@
 package com.example.module4_spring_with_spring_boot.item;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,5 +32,14 @@ class ItemServiceImpl implements ItemService {
     @Override
     public void deleteItem(long userId, long itemId) {
         repository.deleteByUserIdAndItemId(userId, itemId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ItemDto> getItems(long userId, Set<String> tags) {
+        BooleanExpression byUserId = QItem.item.userId.eq(userId);
+        BooleanExpression byAnyTag = QItem.item.tags.any().in(tags);
+        Iterable<Item> foundItems = repository.findAll(byUserId.and(byAnyTag));
+        return ItemMapper.mapToItemDto(foundItems);
     }
 }
